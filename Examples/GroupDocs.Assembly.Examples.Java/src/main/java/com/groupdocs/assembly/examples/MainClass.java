@@ -3,7 +3,13 @@ package com.groupdocs.assembly.examples;
 public class MainClass {
 	public static void main(String[] args) throws Throwable {
 		// Apply license
-		//CommonUtilities.applyLicense();
+		CommonUtilities.applyLicense();
+		
+		//Change target file format using the file extension
+		//GenerateReport.changeTargetFileFormat();
+
+		//Change target file format using explicit specifying
+		//GenerateReport.changeTargetFileFormatUsingExplicitSpecifying();
 
 		// region Generating Bubble Chart
 		// Generate bubble chart report in document processing format
@@ -12,7 +18,7 @@ public class MainClass {
 		// GenerateReport.generateBubbleChart("spreadsheet");
 		// Generate bubble chart report in presentation format
 		// GenerateReport.generateBubbleChart("presentation");
-		//GenerateReport.generateBubbleChart("email"); 
+		// GenerateReport.generateBubbleChart("email"); 
 		// endregion
 
 		// region Generating Bulleted List
@@ -131,7 +137,7 @@ public class MainClass {
 
 		// region In-Table List
 		// Generate in table lsit report in document format
-		// GenerateReport.generateInTableList("document");
+		 //GenerateReport.generateInTableList("document");
 		// Generate in table list report in spreadsheet format
 		// GenerateReport.generateInTableList("spreadsheet");
 		// Generate in table list report in presentation format
@@ -167,7 +173,7 @@ public class MainClass {
 
 		// region Numbered List
 		// Generate Numbered List report in document format
-		// GenerateReport.generateNumberedList("document");
+		//GenerateReport.generateNumberedList("document");
 		// Generate Numbered list report in spreadsheet format
 		// GenerateReport.generateNumberedList("spreadsheet");
 		// Generate Numbered list report in presentation format
@@ -177,6 +183,10 @@ public class MainClass {
 		// Generate Numbered list report in text format
 		//GenerateReport.generateNumberedList("txt");
 		//GenerateReport.generateNumberedList("email");
+		//Generate a Nested Numbered List Report with restartNum in Documents
+		//GenerateReport.generateNumberedListWithRestart_Documents();
+		//Generate a Nested Numbered List Report with restartNum in Emails
+		//GenerateReport.generateNumberedListWithRestart_Emails();
 		// endregion
 
 		// region Pie Chart
@@ -186,7 +196,7 @@ public class MainClass {
 		// GenerateReport.generatePieChart("spreadsheet");
 		// Generate pie char report presentation format
 		// GenerateReport.generatePieChart("presentation");
-		//GenerateReport.generatePieChart("email");
+		// GenerateReport.generatePieChart("email");
 		// endregion
 
 		// region Scatter Chart
@@ -196,7 +206,7 @@ public class MainClass {
 		// GenerateReport.generateScatterChart("spreadsheet");
 		// Generate scatter chart report in presentation format
 		// GenerateReport.generateScatterChart("presentation");
-		//GenerateReport.generateScatterChart("email");
+		// GenerateReport.generateScatterChart("email");
 		// endregion
 
 		// region single row
@@ -207,10 +217,10 @@ public class MainClass {
 		// Generate single row in presentation format
 		// GenerateReport.generateSingleRow("presentation");
 		// Generate single row in html format
-		//GenerateReport.generateSingleRow("html");
+		// GenerateReport.generateSingleRow("html");
 		// Generate single row in text format
-		//GenerateReport.generateSingleRow("txt");
-		//GenerateReport.generateSingleRow("email");
+		// GenerateReport.generateSingleRow("txt");
+		// GenerateReport.generateSingleRow("email");
 		// endregion
 
 		// Region Barcode Insertion
@@ -229,7 +239,14 @@ public class MainClass {
 
 		// retion outer document insertion
 		// Generate report with outer document insertion
-		// GenerateReport.outerDocumentInsertion("document");
+		//GenerateReport.outerDocumentInsertion("document");
+
+		//Insert nested external output documents in word
+		//GenerateReport.insertNestedExternalDocumentsInWord();
+
+		//Insert nested external output documents in email
+		//GenerateReport.insertNestedExternalDocumentsInEmail();
+
 		// endregion
 
 		// region update field
@@ -279,6 +296,143 @@ public class MainClass {
 
 		// Html Reports
 		//GenerateReport.importingSpreadsheetIntoHtml("/Contracts Data.xlsx","/Html Templates/Importing Spreadsheet into HTML Document.html");
+
+		// Ability to remove selective chart series
+		// GenerateReport.removeSelectiveChartSeries();
+
+		// Dynamic Chart Axis Title
+		//GenerateReport.dynamicChartAxisTitle();
+
+		//Dynamic Chart Axis Title in Presentation Document
+		//GenerateReport.dynamicChartAxisTitlePPt();
+
+		//Dynamic Chart Axis Title in Spreadsheet Document
+		//GenerateReport.dynamicChartAxisTitleSpreadSheet();
+
+		//Dynamic Chart Axis Title in Presentation Document
+		//GenerateReport.dynamicChartAxisTitleEmail();
+
+		// Dynamic Color in wordpressing document
+		// GenerateReport.dynamicColor();
+
+        // Working With Table Row DataBands in Word Processing Document
+        // GenerateReport.workingWithTableRowDataBandsWord();
+
+        // Working With Table Row DataBands in SpreadSheet Document
+        // GenerateReport.workingWithTableRowDataBandsSpreadSheet();
+        // Working With Table Row DataBands in Presentation Document
+        // GenerateReport.workingWithTableRowDataBandsPresentation();
+        // Working With Table Row DataBands in Email Format
+        // GenerateReport.workingWithTableRowDataBandsEmail();
+		//GenerateReport.usingStringTemplate();
+
+		// Sets colors of chart series dynamically based upon expressions word processing document
+		//GenerateReport.dynamicChartSeriesColor();
+		// Sets colors of chart series dynamically based upon expressions Spreadsheet document
+		//GenerateReport.dynamicChartSeriesColorSpreadsheet();
+		// Sets colors of chart series dynamically based upon expressions presentation document
+		//GenerateReport.dynamicChartSeriesColorPresentation();
+		// Sets colors of chart series dynamically based upon expressions email document
+		//GenerateReport.dynamicChartSeriesColorEmail();
+
+		// Sets colors of chart series point color dynamically based upon expressions word processing document
+		//GenerateReport.dynamicChartSeriesPointColor();
+		// Sets colors of chart series point color dynamically based upon expressions spreadsheet document
+		//GenerateReport.dynamicChartSeriesPointColorSpreadsheet();
+		// Sets colors of chart series point color dynamically based upon expressions presentation document
+		//GenerateReport.dynamicChartSeriesPointColorPresentation();
+		// Sets colors of chart series point color dynamically based upon expressions email document
+		//GenerateReport.dynamicChartSeriesPointColorEmail();
+
+		//Insert Hyperlink Dynamically in Word Document
+		//GenerateReport.dynamicHyperlinkInsertionWord();
+		//Insert Hyperlink Dynamically in Presentation Document
+		//GenerateReport.dynamicHyperlinkInsertionPresentation();
+		//Insert Hyperlink Dynamically in Spreadsheet Document
+		//GenerateReport.dynamicHyperlinkInsertionSpreadsheet();
+		//Insert Hyperlink Dynamically in Email Document
+		//GenerateReport.dynamicHyperlinkInsertionEmail();
+
+		//Working with word processing document
+		//GenerateReport.emptyParagraphInWordProcessing();
+
+		//Working with presentation document
+		//GenerateReport.emptyParagraphInPresentation();
+
+		//Working with email documents
+		//GenerateReport.emptyParagraphInEmail();
+		 
+		
+         // Merging table cells dynamically in Word Processing
+         //GenerateReport.tableCellsMergingInWordProcessing();
+
+         // Merging table cells dynamically in Presentations
+         //GenerateReport.tableCellsMergingInPresentations();
+
+         // Merging table cells dynamically in Spreadsheets
+         //GenerateReport.tableCellsMergingInSpreadsheets();
+
+         // Merging table cells dynamically in Email
+          //GenerateReport.tableCellsMergingInEmails();
+		
+        //Demonstrate how to enable in-line syntax errors in the template without throw any exception
+		//GenerateReport.demoInLineSyntaxError();
+		
+		//Loading of template documents from HTML with resources
+		//GenerateReport.loadDocFromHTMLWithResource();
+		
+		//Loading of template documents from HTML with resources from an explicitly specified folder
+		//GenerateReport.loadDocFromHTMLWithResource_ExplicitFolder();
+		
+	
+        //Saving of external resource files at relative path 
+        //GenerateReport.saveDocToHTMLWithResource();
+
+        // Saving of external resource files in a specified folder at relative path while saving output to HTML
+        //GenerateReport.saveDocToHTMLWithResource_ExplicitFolder();
+	
+		/*#region-Working with Markdown*/
+		//Saving an assembled Word Processing document or email to Markdown using file extension.
+		//GenerateReport.saveWordOrEmailtoMD_UsingExtension();
+		
+		//Saving an assembled Markdown document to a Word Processing format using file extension.
+		//GenerateReport.saveMdtoWord_UsingExtension();
+				
+		//Saving an assembled Word Processing document or email to Markdown using explicit specifying.
+		//GenerateReport.saveWordOrEmailtoMD_Explicit();
+		
+		/*#endregion-Working with Markdown*/
+		
+		
+		// Working with XML data sources.
+		//GenerateReport.simpleXMLDS_Demo();
+		
+		// Working with CSV data sources.
+		//GenerateReport.simpleCsvDS_Demo();
+		
+		//Working with Json Data Source
+		//GenerateReport.simpleJsonDS_Demo();
+		
+		//Insert Bookmarks Dynamically in Word Document
+		//GenerateReport.dynamicBookmarkInsertionWord();
+		
+		//Insert Bookmarks Dynamically in Excel Document
+		//GenerateReport.dynamicBookmarkInsertionExcel();
+		
+		//Insert Image Dynamically in Word Document
+		//GenerateReport.insertImageDynamicallyInWord();
+		
+		//Insert Document Dynamically in Word Document
+		//GenerateReport.insertDocumentDynamicallyInWord();
+		
+		//Set checkbox value dynamically in Word document
+		GenerateReport.setCheckboxValueDynamicallyInWord(true);
+		
+		
+		
+		
+		/*#endRegion*/
+		System.out.println("All Done..");
 	}
 
 }

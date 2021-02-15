@@ -1,14 +1,33 @@
 package com.groupdocs.assembly.examples;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Console;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import javax.xml.crypto.Data;
+
+import com.groupdocs.assembly.DataSourceInfo;
+import com.groupdocs.assembly.XmlDataSource;
+import com.groupdocs.assembly.CsvDataLoadOptions;
+import com.groupdocs.assembly.CsvDataSource;
 import com.groupdocs.assembly.DocumentAssembler;
 import com.groupdocs.assembly.DocumentAssemblyOptions;
 import com.groupdocs.assembly.DocumentTable;
 import com.groupdocs.assembly.DocumentTableOptions;
 import com.groupdocs.assembly.DocumentTableSet;
+import com.groupdocs.assembly.FileFormat;
+import com.groupdocs.assembly.JsonDataSource;
+import com.groupdocs.assembly.LoadSaveOptions;
 import com.groupdocs.assembly.examples.BusinessEntities.Manager;
+import com.groupdocs.assembly.examples.DataStorage.EmailDataSourcesNames;
+import com.groupdocs.assembly.examples.DataStorage.EmailDataSourcesObjects;
 
 public class GenerateReport {
 
@@ -64,7 +83,7 @@ public class GenerateReport {
 		// Pass DocumentTableSet as a data source.
 		DocumentAssembler assembler = new DocumentAssembler();
 		assembler.assembleDocument(CommonUtilities.getDataPath(slideDoc),
-				CommonUtilities.getOutPath("/Presentation Reports/out.pptx"), tableSet);
+				CommonUtilities.getOutPath("/Presentation Reports/out.pptx"), new DataSourceInfo( tableSet));
 		// ExEnd:useDocumentTableSetAsDataSource
 	}
 
@@ -86,7 +105,7 @@ public class GenerateReport {
 		// Pass DocumentTableSet as a data source.
 		DocumentAssembler assembler = new DocumentAssembler();
 		assembler.assembleDocument(CommonUtilities.getDataPath(docTableRelations),
-				CommonUtilities.getOutPath("/Word Reports/out.docx"), tableSet);
+				CommonUtilities.getOutPath("/Word Reports/out.docx"),new DataSourceInfo( tableSet));
 		// ExEnd:definingDocumentTableRelations
 	}
 
@@ -110,7 +129,7 @@ public class GenerateReport {
 		// Pass DocumentTable as a data source.
 		DocumentAssembler assembler = new DocumentAssembler();
 		assembler.assembleDocument(CommonUtilities.getDataPath(doc),
-				CommonUtilities.getOutPath("/Presentation Reports/out.pptx"), table, "Managers");
+				CommonUtilities.getOutPath("/Presentation Reports/out.pptx"), new DataSourceInfo( table, "Managers"));
 		// ExEnd:changingDocumentTableColumnType
 	}
 
@@ -123,7 +142,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -135,7 +154,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -147,7 +166,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -156,12 +175,17 @@ public class GenerateReport {
 			//ExStart:emailgenerateBubbleChart
 			String srcDocument = "/Email Templates/Bubble Chart.eml";
 			String docReport = "/Email Reports/Bubble Chart_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Bubble Chart.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Bubble Chart.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+					new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+					new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+					new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+					new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+					new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailgenerateBubbleChart
 		}
 	}
@@ -172,9 +196,10 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/Bulleted List.docx";
 			String docReport = "/Word Reports/Bulleted List_report.docx";
 			try {
+				
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -186,7 +211,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -198,7 +223,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -210,7 +235,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -222,7 +247,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -231,12 +256,17 @@ public class GenerateReport {
 			//ExStart:emailgenerateBulletedList
 			String srcDocument = "/Email Templates/Bulleted List.msg";
 			String docReport = "/Email Reports/Bulleted List_report.msg";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Bulleted List.msg", ".msg");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".msg");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Bulleted List.msg", ".msg");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".msg");
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+									CommonUtilities.getOutPath(docReport),
+									new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+									new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+									new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+									new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+									new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+									new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailgenerateBulletedList
 		} 
 	}
@@ -250,7 +280,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -262,7 +292,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -274,7 +304,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -283,12 +313,17 @@ public class GenerateReport {
 			//ExStart:emailchartwithfilteringgroupingordering
 			String srcDocument = "/Email Templates/Chart with Filtering, Grouping, and Ordering.msg";
 			String docReport = "/Email Reports/Chart with Filtering, Grouping, and Ordering_report.msg";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Chart with Filtering, Grouping, and Ordering.msg", ".msg");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".msg");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Chart with Filtering, Grouping, and Ordering.msg", ".msg");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".msg");
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailchartwithfilteringgroupingordering
 		} 
 	}
@@ -303,7 +338,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -315,7 +350,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -327,7 +362,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -341,7 +376,7 @@ public class GenerateReport {
 				// This is needed solely for images in HTML documents.
 				assembler.getKnownTypes().add(FileUtil.class);
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -353,7 +388,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -362,12 +397,17 @@ public class GenerateReport {
 			//ExStart:emailCommonList
 			String srcDocument = "/Email Templates/Common List.eml";
 			String docReport = "/Email Reports/Common List_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Common List.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Common List.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailCommonList
 		} 
 	}
@@ -382,7 +422,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -394,7 +434,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -406,7 +446,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -420,7 +460,7 @@ public class GenerateReport {
 				// This is needed solely for images in HTML documents.
 				assembler.getKnownTypes().add(FileUtil.class);
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -432,7 +472,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -441,12 +481,17 @@ public class GenerateReport {
 			//ExStart:emailCommonMasterDetail
 			String srcDocument = "/Email Templates/Common Master-Detail.eml";
 			String docReport = "/Email Reports/Common Master-Detail_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Common Master-Detail.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Common Master-Detail.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailCommonMasterDetail
 		} 
 	}
@@ -461,7 +506,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -473,7 +518,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -485,7 +530,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -497,7 +542,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -509,7 +554,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -518,12 +563,17 @@ public class GenerateReport {
 			//ExStart:emailInParagraphList
 			String srcDocument = "/Email Templates/In-Paragraph List.eml";
 			String docReport = "/Email Reports/In-Paragraph List_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Paragraph List.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Paragraph List.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInParagraphList
 		} 
 	}
@@ -538,7 +588,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -550,7 +600,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -562,7 +612,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -574,7 +624,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -583,12 +633,17 @@ public class GenerateReport {
 			//ExStart:emailInTableListWithAlternateContent
 			String srcDocument = "/Email Templates/In-Table List with Alternate Content.eml";
 			String docReport = "/Email Reports/In-Table List with Alternate Content_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Alternate Content.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Alternate Content.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInTableListWithAlternateContent
 		} 
 	}
@@ -603,7 +658,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -615,7 +670,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -627,7 +682,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -639,7 +694,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -648,12 +703,17 @@ public class GenerateReport {
 			//ExStart:emailInTableListWithFilteringGroupingAndOrdering
 			String srcDocument = "/Email Templates/In-Table List with Filtering, Grouping, and Ordering.eml";
 			String docReport = "/Email Reports/In-Table List with Filtering, Grouping, and Ordering_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Filtering, Grouping, and Ordering.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Filtering, Grouping, and Ordering.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInTableListWithFilteringGroupingAndOrdering
 		} 
 	}
@@ -668,7 +728,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -680,7 +740,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -692,7 +752,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -704,7 +764,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -713,12 +773,17 @@ public class GenerateReport {
 			//ExStart:emailInTableListWithHighlightedRows
 			String srcDocument = "/Email Templates/In-Table List with Highlighted Rows.eml";
 			String docReport = "/Email Reports/In-Table List with Highlighted Rows_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Highlighted Rows.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List with Highlighted Rows.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInTableListWithHighlightedRows
 		} 
 	}
@@ -733,7 +798,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -745,7 +810,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -757,7 +822,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -769,7 +834,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -778,12 +843,17 @@ public class GenerateReport {
 			//ExStart:emailInTableList
 			String srcDocument = "/Email Templates/In-Table List.eml";
 			String docReport = "/Email Reports/In-Table List_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table List.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInTableList
 		}  
 	}
@@ -798,7 +868,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -810,7 +880,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -822,7 +892,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -834,7 +904,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -843,12 +913,17 @@ public class GenerateReport {
 			//ExStart:emailInTableMasterDetail
 			String srcDocument = "/Email Templates/In-Table Master-Detail.eml";
 			String docReport = "/Email Reports/In-Table Master-Detail_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table Master-Detail.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("In-Table Master-Detail.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailInTableMasterDetail
 		} 
 	}
@@ -863,7 +938,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -875,7 +950,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -887,7 +962,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -899,7 +974,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -908,12 +983,17 @@ public class GenerateReport {
 			//ExStart:emailMulticoloredNumberedList
 			String srcDocument = "/Email Templates/Multicolored Numbered List.eml";
 			String docReport = "/Email Reports/Multicolored Numbered List_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Multicolored Numbered List.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Multicolored Numbered List.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailMulticoloredNumberedList
 		} 
 	}
@@ -928,7 +1008,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -940,7 +1020,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -952,7 +1032,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -964,7 +1044,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -976,7 +1056,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -985,16 +1065,50 @@ public class GenerateReport {
 			//ExStart:emailNumberedList
 			String srcDocument = "/Email Templates/Numbered List.eml";
 			String docReport = "/Email Reports/Numbered List_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Numbered List.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Numbered List.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailNumberedList
 		} 
 	}
 
+	//Generate a Nested Numbered List Report with restartNum in Emails
+	public static void generateNumberedListWithRestart_Emails(){
+		// ExStart:numberedListWithRestart_Documents
+		String srcDocument = "/Email Templates/Numbered List_RestartNum.msg";
+		String docReport = "/Email Reports/Numbered List_RestartNum.msg";
+		try {
+			//Manager manager = new DataStorage().getManagers().iterator().next();
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(),null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:numberedListWithRestart_Documents
+	}
+	public static void generateNumberedListWithRestart_Documents(){
+		// ExStart:numberedListWithRestart_Documents
+		String srcDocument = "/Word Templates/Numbered List_RestartNum.docx";
+		String docReport = "/Word Reports/Numbered List_RestartNum.docx";
+		try {
+			//Manager manager = new DataStorage().getManagers().iterator().next();
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(),null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:numberedListWithRestart_Documents
+	}
 	// Generate pie chart
 	public static void generatePieChart(String documentFormat) throws Throwable {
 		if (documentFormat == "document") {
@@ -1005,7 +1119,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1017,7 +1131,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1029,7 +1143,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1038,12 +1152,17 @@ public class GenerateReport {
 			//ExStart:emailPieChart
 			String srcDocument = "/Email Templates/Pie Chart.eml";
 			String docReport = "/Email Reports/Pie Chart_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Pie Chart.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Pie Chart.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailPieChart
 		} 
 	}
@@ -1058,7 +1177,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1070,7 +1189,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1082,7 +1201,7 @@ public class GenerateReport {
 			try {
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1091,12 +1210,17 @@ public class GenerateReport {
 			//ExStart:emailScatterChart
 			String srcDocument = "/Email Templates/Scatter Chart.eml";
 			String docReport = "/Email Reports/Scatter Chart_report.eml";
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Scatter Chart.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Scatter Chart.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailScatterChart
 		} 
 	}
@@ -1111,7 +1235,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), manager, "manager");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( manager, "manager"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1124,7 +1248,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), manager, "manager");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( manager, "manager"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1137,7 +1261,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), manager, "manager");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( manager, "manager"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1152,7 +1276,7 @@ public class GenerateReport {
 				// This is needed solely for images in HTML documents.
 				assembler.getKnownTypes().add(FileUtil.class);
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), manager, "manager");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( manager, "manager"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1165,7 +1289,7 @@ public class GenerateReport {
 				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), manager, "manager");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( manager, "manager"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1175,27 +1299,33 @@ public class GenerateReport {
 			String srcDocument = "/Email Templates/Single Row.eml";
 			String docReport = "/Email Reports/Single Row_report.eml";
 			Manager manager = new DataStorage().getManagers().iterator().next();
-			Object[] getDataSourceDetails = DataStorage.emailDataSourceObject("Single Row.eml", ".eml");
-			String[] dataSourceNames = DataStorage.emailDataSourceName(".eml");
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Single Row.eml", ".eml");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".eml");
 			DocumentAssembler assembler = new DocumentAssembler(); 
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-					CommonUtilities.getOutPath(docReport), getDataSourceDetails,
-					dataSourceNames);
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
 			//ExEnd:emailSingleRow
 		} 
 	}
 
 	// Generate barcode
-	public static void addBarCodes(String documentFormat) {
+	public static void addBarCodes(String documentFormat) throws Exception {
 		if (documentFormat == "document") {
 			// ExStart:barcodedocument
-			String srcDocument = "/Word Templates/Barcode.docx";
-			String docReport = "/Word Reports/Barcode_report.docx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
+				//Setting up data set, Method DataStorage().getManagers().iterator().next()  is defined here : https://docs.groupdocs.com/display/assemblyjava/The+Business+Layer#TheBusinessLayer-DataStorageClass
+				//Instantiate DocumentAssembler class
 				DocumentAssembler assembler = new DocumentAssembler();
-				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), "854283", "value");
+				//Call AssembleDocument to generate   Report in open document format
+				assembler.assembleDocument("D:\\Word Templates\\Barcode.docx", "D:\\Word Reports\\Barcode_report.docx",  
+				new DataSourceInfo( new DataStorage().getManagers().iterator().next(), "value"));
+
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1205,10 +1335,9 @@ public class GenerateReport {
 			String srcDocument = "/Spreadsheet Templates/Barcode.xlsx";
 			String docReport = "/Spreadsheet Reports/Barcode_report.xlsx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), "854283", "value");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( "854283", "value"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1218,10 +1347,9 @@ public class GenerateReport {
 			String srcDocument = "/Presentation Templates/Barcode.pptx";
 			String docReport = "/Presentation Reports/Barcode_report.pptx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), "854283", "value");
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( "854283", "value"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1236,10 +1364,9 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/Numeric Upper.docx";
 			String docReport = "/Word Reports/Numeric Upper_report.docx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1254,10 +1381,9 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/OuterDocInsertion.docx";
 			String docReport = "/Word Reports/OuterDocInsertion_report.docx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1272,11 +1398,10 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/Update field.docx";
 			String docReport = "/Word Reports/Update field_report.docx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1286,11 +1411,10 @@ public class GenerateReport {
 			String srcDocument = "/Spreadsheet Templates/Update formula.xlsx";
 			String docReport = "/Spreadsheet Reports/Update formula_report.xlsx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1305,10 +1429,9 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/Using next.docx";
 			String docReport = "/Word Reports/Using next_report.docx";
 			try {
-				Manager manager = new DataStorage().getManagers().iterator().next();
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), new DataStorage(), null);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1322,10 +1445,9 @@ public class GenerateReport {
 		String srcDocument = "/Word Templates/Using Spreadsheet as Table of Data.docx";
 		String docReport = "/Word Reports/Using Spreadsheet as Table of Data_report.docx";
 		try {
-			Manager manager = new DataStorage().getManagers().iterator().next();
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument), CommonUtilities.getOutPath(docReport),
-					DataStorage.excelData(), "contracts");
+				new DataSourceInfo(	DataStorage.excelData(), "contracts"));
 		} catch (Exception exp) {
 			System.out.println("Exception: " + exp.getMessage());
 		}
@@ -1338,10 +1460,9 @@ public class GenerateReport {
 		String srcDocument = "/Presentation Templates/Importing Word Processing Table into Presentation.pptx";
 		String docReport = "/Presentation Reports/Importing Word Processing Table into Presentation_report.pptx";
 		try {
-			Manager manager = new DataStorage().getManagers().iterator().next();
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument), CommonUtilities.getOutPath(docReport),
-					DataStorage.importingWordProcessingTableIntoPresentation(), "table");
+				new DataSourceInfo(	DataStorage.importingWordProcessingTableIntoPresentation(), "table"));
 		} catch (Exception exp) {
 			System.out.println("Exception: " + exp.getMessage());
 		}
@@ -1357,7 +1478,7 @@ public class GenerateReport {
 			Manager manager = new DataStorage().getManagers().iterator().next();
 			DocumentAssembler assembler = new DocumentAssembler();
 			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument), CommonUtilities.getOutPath(docReport),
-					DataStorage.presentationData(), "table");
+				new DataSourceInfo(	DataStorage.presentationData(), "table"));
 		} catch (Exception exp) {
 			System.out.println("Exception: " + exp.getMessage());
 		}
@@ -1372,13 +1493,9 @@ public class GenerateReport {
 			String srcDocument = "/Word Templates/Multiple DS.docx";
 			String docReport = "/Word Reports/Multiple DS_report.docx";
 			try {
-				// Create an array of data source objects
-				Object[] dataSourceObj = new Object[] { new DataStorage(), DataStorage.excelData() };
-				// Create an array of data source string
-				String[] dataSourceString = new String[] { null, "contracts" };
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), dataSourceObj, dataSourceString);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null), new DataSourceInfo(DataStorage.excelData(),"contracts"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1388,13 +1505,10 @@ public class GenerateReport {
 			String srcDocument = "/Spreadsheet Templates/Multiple DS.xlsx";
 			String docReport = "/Spreadsheet Reports/Multiple DS_report.xlsx";
 			try {
-				// Create an array of data source objects
-				Object[] dataSourceObj = new Object[] { new DataStorage(), DataStorage.excelData() };
-				// Create an array of data source string
-				String[] dataSourceString = new String[] { null, "contracts" };
+				
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), dataSourceObj, dataSourceString);
+						CommonUtilities.getOutPath(docReport), new DataSourceInfo(new DataStorage(), null), new DataSourceInfo(DataStorage.excelData(),"contracts"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1404,13 +1518,9 @@ public class GenerateReport {
 			String srcDocument = "/Presentation Templates/Multiple DS.pptx";
 			String docReport = "/Presentation Reports/Multiple DS_report.pptx";
 			try {
-				// Create an array of data source objects
-				Object[] dataSourceObj = new Object[] { new DataStorage(), DataStorage.excelData() };
-				// Create an array of data source string
-				String[] dataSourceString = new String[] { null, "contracts" };
 				DocumentAssembler assembler = new DocumentAssembler();
 				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
-						CommonUtilities.getOutPath(docReport), dataSourceObj, dataSourceString);
+						CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null), new DataSourceInfo(DataStorage.excelData(),"contracts"));
 			} catch (Exception exp) {
 				System.out.println("Exception: " + exp.getMessage());
 			}
@@ -1438,9 +1548,1259 @@ public class GenerateReport {
 		// This is needed solely for images in HTML documents.
 		assembler.getKnownTypes().add(FileUtil.class);
 		assembler.assembleDocument(CommonUtilities.getDataPath(sourceTemplate),
-				CommonUtilities.getOutPath("/Html Reports/out.html"), table, "table");
+				CommonUtilities.getOutPath("/Html Reports/out.html"),new DataSourceInfo( table, "table"));
 		// DocumentAssembler assembler = new DocumentAssembler();
 		// ExEnd:generateHtmlReport
 	}
 
+    public static void removeSelectiveChartSeries() {
+		// ExStart:removeSelectiveChartSeries
+		String srcDocument = "/Word Templates/Chart with Filtering, Grouping, and Ordering_RemoveIf.docx";
+		String docReport = "/Word Reports/Chart with Filtering, Grouping, and Ordering_report_RemoveIf.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			//Set mode 1 or 2 to remove 1st or 2nd Quarter data
+			int mode = 1;
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(),"orders"), 
+					new DataSourceInfo(mode,"mode"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:removeSelectiveChartSeries
+    }
+
+	public static void dynamicChartAxisTitle() {
+		// ExStart:dynamicChartAxisTitle
+		String srcDocument = "/Word Templates/Chart with Filtering, Grouping, and Ordering_dynamic_title.docx";
+		String docReport = "/Word Reports/Chart with Filtering, Grouping, and Ordering_dynamic_title.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			String title = "Total Order Quantity by Quarters";
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport), 
+					new DataSourceInfo(new DataStorage(),"orders" ),
+					new DataSourceInfo(title,"title"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:dynamicChartAxisTitle
+	}
+
+	public static void dynamicColor() {
+		// ExStart:dynamicChartAxisTitle
+		String srcDocument = "/Word Templates/In-Table List_BackgroundColor.docx";
+		String docReport = "/Word Reports/In-Table List_BackgroundColor.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			String color = "red";
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(new DataStorage(), "orders"),
+					new DataSourceInfo(color,"color" ));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:dynamicChartAxisTitle
+	}
+
+	public static void dynamicChartAxisTitlePPt() {
+		// ExStart:dynamicChartAxisTitlePPt
+		String srcDocument = "\\Presentation Templates\\Chart with Filtering, Grouping, and Ordering_Dynamic_Title.pptx";
+		String docReport = "\\Presentation Reports\\Chart with Filtering, Grouping, and Ordering_Dynamic_Title.pptx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			String title = "Total Order Quantity by Quarters";
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(new DataStorage(),"orders"),
+					new DataSourceInfo(title,"title"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:dynamicChartAxisTitlePPt
+	}
+
+	public static void dynamicChartAxisTitleSpreadSheet() {
+		// ExStart:dynamicChartAxisTitleSpreadSheet
+		String srcDocument = "\\Spreadsheet Templates\\Chart with Filtering, Grouping, and Ordering_Dynamic_Title.xlsx";
+		String docReport = "\\Spreadsheet Reports\\Chart with Filtering, Grouping, and Ordering_Dynamic_Title.xlsx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			String title = "Total Order Quantity by Quarters";
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(new DataStorage(),"orders"),
+					new DataSourceInfo(title,"title"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+		// ExEnd:dynamicChartAxisTitleSpreadSheet
+	}
+
+	public static void dynamicChartAxisTitleEmail() {
+		// ExStart:dynamicChartAxisTitleEmail
+		String srcDocument = "\\Email Templates\\Chart with Filtering, Grouping, and Ordering.msg";
+		String docReport = "\\Email Reports\\Chart with Filtering, Grouping, and Ordering_report.msg";
+		try{
+			String title = "Total Order Quantity by Quarters";
+			EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Chart with Filtering, Grouping, and Ordering.msg", ".msg",title );
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".msg", title);
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+				CommonUtilities.getOutPath(docReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()),
+				new DataSourceInfo(getDataSourceDetails.getTitle(), dataSourceNames.getTitle()));
+		}catch ( Exception exp){
+			System.out.println("Exception: " + exp.getMessage());
+		}
+
+		// ExEnd:dynamicChartAxisTitleEmail
+	}
+
+	public static void workingWithTableRowDataBandsWord() throws Throwable {
+        String srcDocument = "/Word Templates/Working With Table Row Data Bands.docx";
+        String docReport = "/Word Reports/Working With Table Row Data Bands.docx";
+        try {
+            DocumentAssembler assembler = new DocumentAssembler();
+            assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(new DataStorage(), null),
+					new DataSourceInfo(DataStorage.excelData(),"ds"));
+        } catch (Exception exp) {
+            System.out.println("Exception: " + exp.getMessage());
+        }
+	}
+	public static void workingWithTableRowDataBandsSpreadSheet() throws Throwable {
+		String srcDocument = "/Spreadsheet Templates/Working With Table Row Data Bands.xlsx";
+		String docReport = "/Spreadsheet Reports/Working With Table Row Data Bands.xlsx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport), 
+					new DataSourceInfo(new DataStorage(), null),
+					new DataSourceInfo(DataStorage.excelData(),"ds"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void workingWithTableRowDataBandsPresentation() throws Throwable {
+		String srcDocument = "/Presentation Templates/Working With Table Row Data Bands.pptx";
+		String docReport = "/Presentation Reports/Working With Table Row Data Bands.pptx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport), 
+					new DataSourceInfo(new DataStorage(), null),
+					new DataSourceInfo(DataStorage.excelData(),"ds"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void workingWithTableRowDataBandsEmail() throws Throwable {
+		String srcDocument = "/Email Templates/Working With Table Row Data Bands.msg";
+		String docReport = "/Email Reports/Working With Table Row Data Bands.msg";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo(new DataStorage(), null),
+					new DataSourceInfo(DataStorage.excelData(),"ds"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void usingStringTemplate() {
+		try{
+			DocumentAssembler assembler = new DocumentAssembler();
+			String sourceString = "<<[yourValue]>>";
+			byte[] sourceBytes = sourceString.getBytes();
+			byte[] targetBytes;
+			ByteArrayInputStream sourceStream = new ByteArrayInputStream(sourceBytes);
+			ByteArrayOutputStream targetStream = new ByteArrayOutputStream();
+			assembler.assembleDocument(sourceStream, targetStream, new DataSourceInfo("Hello, World!", "yourValue"));
+			targetBytes = targetStream.toByteArray();
+			String targetString = new String(targetBytes, StandardCharsets.UTF_8);
+			System.out.println(targetString);
+
+		}
+		catch (Exception exp){
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void dynamicChartSeriesColor() {
+		try {
+			String srcDocument = "/Word Templates/Dynamic Chart Series Color.docx";
+			String outDocument = "/Word Reports/Dynamic Chart Series Color.docx";
+			//Define series color
+			String color1 = "blue";
+			String color2 = "red";
+			// Set table column names to be extracted from the document.
+			DocumentTableOptions options = new DocumentTableOptions();
+			options.setFirstRowContainsColumnNames(true);
+
+			DocumentTable table = new DocumentTable(CommonUtilities.wordDataFile + "/Managers Data.docx", 1, options);
+
+			// NOTE: For non-Spreadsheet documents, the type of a document table
+			// column is always string by default.
+			assert table.getColumns().get("Total_Contract_Price").getType() == String.class;
+
+			// Change the column's type to double thus enabling to use arithmetic
+			// operations on values of the column
+			// such as summing in templates.
+			table.getColumns().get("Total_Contract_Price").setType(double.class);
+
+			// Pass DocumentTable as a data source.
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(outDocument),
+					new DataSourceInfo(table,"managers"),
+					new DataSourceInfo(color1,"color1"),
+					new DataSourceInfo(color2,"color2"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void dynamicChartSeriesColorSpreadsheet() {
+		try {
+			String srcDocument = "/Spreadsheet Templates/Dynamic Chart Series Color.xlsx";
+			String outDocument = "/Spreadsheet Reports/Dynamic Chart Series Color.xlsx";
+			//Define series color
+			String color1 = "blue";
+			String color2 = "red";
+			// Set table column names to be extracted from the document.
+			DocumentTableOptions options = new DocumentTableOptions();
+			options.setFirstRowContainsColumnNames(true);
+
+			DocumentTable table = new DocumentTable(CommonUtilities.wordDataFile + "/Managers Data.docx", 1, options);
+
+			// NOTE: For non-Spreadsheet documents, the type of a document table
+			// column is always string by default.
+			assert table.getColumns().get("Total_Contract_Price").getType() == String.class;
+
+			// Change the column's type to double thus enabling to use arithmetic
+			// operations on values of the column
+			// such as summing in templates.
+			table.getColumns().get("Total_Contract_Price").setType(double.class);
+
+			// Pass DocumentTable as a data source.
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(outDocument), 
+					new DataSourceInfo(table,"managers"),
+					new DataSourceInfo(color1,"color1"),
+					new DataSourceInfo(color2,"color2"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void dynamicChartSeriesColorPresentation() {
+		try {
+			String srcDocument = "/Presentation Templates/Dynamic Chart Series Color.pptx";
+			String outDocument = "/Presentation Reports/Dynamic Chart Series Color.pptx";
+			//Define series color
+			String color1 = "blue";
+			String color2 = "red";
+			// Set table column names to be extracted from the document.
+			DocumentTableOptions options = new DocumentTableOptions();
+			options.setFirstRowContainsColumnNames(true);
+
+			DocumentTable table = new DocumentTable(CommonUtilities.wordDataFile + "/Managers Data.docx", 1, options);
+
+			// NOTE: For non-Spreadsheet documents, the type of a document table
+			// column is always string by default.
+			assert table.getColumns().get("Total_Contract_Price").getType() == String.class;
+
+			// Change the column's type to double thus enabling to use arithmetic
+			// operations on values of the column
+			// such as summing in templates.
+			table.getColumns().get("Total_Contract_Price").setType(double.class);
+
+			// Pass DocumentTable as a data source.
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(outDocument), 
+					new DataSourceInfo(table,"managers"),
+					new DataSourceInfo(color1,"color1"),
+					new DataSourceInfo(color2,"color2"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static void dynamicChartSeriesColorEmail() {
+		try {
+			String srcDocument = "/Email Templates/Dynamic Chart Series Color.msg";
+			String outDocument = "/Email Reports/Dynamic Chart Series Color.msg";
+			//Define series color
+			String color = "blue";
+			// Set table column names to be extracted from the document.
+			DocumentTableOptions options = new DocumentTableOptions();
+			options.setFirstRowContainsColumnNames(true);
+
+			DocumentTable table = new DocumentTable(CommonUtilities.wordDataFile + "/Managers Data.docx", 1, options);
+
+			// NOTE: For non-Spreadsheet documents, the type of a document table
+			// column is always string by default.
+			assert table.getColumns().get("Total_Contract_Price").getType() == String.class;
+
+			// Change the column's type to double thus enabling to use arithmetic
+			// operations on values of the column
+			// such as summing in templates.
+			table.getColumns().get("Total_Contract_Price").setType(double.class);
+
+			// Pass DocumentTable as a data source.
+			DocumentAssembler assembler = new DocumentAssembler();
+			DocumentAssembler.setUseReflectionOptimization(false);
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(outDocument), 
+					new DataSourceInfo(table,"managers"),
+					new DataSourceInfo(color,"color"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void dynamicChartSeriesPointColor() {
+		String srcDocument = "/Word Templates/Dynamic Chart Point Series Color.docx";
+		String docReport = "/Word Reports/Dynamic Chart Point Series Color.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void dynamicChartSeriesPointColorSpreadsheet() {
+		String srcDocument = "/Spreadsheet Templates/Dynamic Chart Point Series Color.xlsx";
+		String docReport = "/Spreadsheet Reports/Dynamic Chart Point Series Color.xlsx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	public static void dynamicChartSeriesPointColorPresentation() {
+		String srcDocument = "/Presentation Templates/Dynamic Chart Point Series Color.pptx";
+		String docReport = "/Presentation Reports/Dynamic Chart Point Series Color.pptx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+	public static void dynamicChartSeriesPointColorEmail() {
+		String srcDocument = "/Email Templates/Dynamic Chart Point Series Color.msg";
+		String docReport = "/Email Reports/Dynamic Chart Point Series Color.msg";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo(new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+
+		// Insert Hyperlink Dynamically in Word Document
+		// Feature is supported by version 18.7 or greater
+		public static void dynamicHyperlinkInsertionWord()
+		{
+			//setting up source 
+			String strDocumentTemplate = "/Word Templates/Dynamic Hyperlink.docx";
+			//Setting up destination 
+			String strDocumentReport = "/Word Reports/Dynamic Hyperlink.docx";
+			//Setting up Uri Expression
+			String uriExpression = "https://www.groupdocs.com/";
+			//Setting up Display Text Expression
+			String displayTextExpression = "GroupDocs";
+			try
+			{	
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				//Call AssembleDocument to assemble document 
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate), CommonUtilities.getOutPath(strDocumentReport), 
+				new DataSourceInfo(uriExpression,"uriExpression"),
+				new DataSourceInfo(displayTextExpression,"displayTextExpression"));
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+		// Insert Hyperlink Dynamically in Email Document
+		// Feature is supported by version 18.7 or greater
+		public static void dynamicHyperlinkInsertionEmail()
+		{
+			//setting up source 
+			String strDocumentTemplate = "/Email Templates/Dynamic Hyperlink.msg";
+			//Setting up destination 
+			String strDocumentReport = "/Email Reports/Dynamic Hyperlink.msg";
+			//Setting up Uri Expression
+			String uriExpression = "https://www.groupdocs.com/";
+			//Setting up Display Text Expression
+			String displayTextExpression = "GroupDocs";
+			try
+			{
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				//Call AssembleDocument to assemble document 
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate), CommonUtilities.getOutPath(strDocumentReport), 
+				new DataSourceInfo(uriExpression,"uriExpression"),
+				new DataSourceInfo(displayTextExpression,"displayTextExpression"));
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+		// Insert Hyperlink Dynamically in Spreadsheet Document
+		// Feature is supported by version 18.7 or greater
+		public static void dynamicHyperlinkInsertionSpreadsheet()
+		{
+			//setting up source 
+			String strDocumentTemplate = "/Spreadsheet Templates/Dynamic Hyperlink.xlsx";
+			//Setting up destination 
+			String strDocumentReport = "/Spreadsheet Reports/Dynamic Hyperlink.xlsx";
+			//Setting up Uri Expression
+			String uriExpression = "https://www.groupdocs.com/";
+			//Setting up Display Text Expression
+			String displayTextExpression = "GroupDocs";
+			try
+			{
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				//Call AssembleDocument to assemble document 
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate), CommonUtilities.getOutPath(strDocumentReport), 
+				new DataSourceInfo(uriExpression,"uriExpression"),
+				new DataSourceInfo(displayTextExpression,"displayTextExpression"));
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+		/// Insert Hyperlink Dynamically in Presentaion Document
+		/// Feature is supported by version 18.7 or greater
+		public static void dynamicHyperlinkInsertionPresentation()
+		{
+			//setting up source 
+			String strDocumentTemplate = "/Presentation Templates/Dynamic Hyperlink.pptx";
+			//Setting up destination 
+			String strDocumentReport = "/Presentation Reports/Dynamic Hyperlink.pptx";
+			//Setting up Uri Expression
+			String uriExpression = "https://www.groupdocs.com/";
+			//Setting up Display Text Expression
+			String displayTextExpression = "GroupDocs";
+			try
+			{
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				//Call AssembleDocument to assemble document 
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate), CommonUtilities.getOutPath(strDocumentReport), 
+				new DataSourceInfo(uriExpression,"uriExpression"),
+				new DataSourceInfo(displayTextExpression,"displayTextExpression"));
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+
+		public static void changeTargetFileFormat() {
+			String srcDocument = "/Word Templates/Bubble Chart.docx";
+			String docReport = "/PDF Reports/Bubble Chart_report.pdf";
+			try {
+				DocumentAssembler assembler = new DocumentAssembler();
+				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
+			} catch (Exception exp) {
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+
+		public static void changeTargetFileFormatUsingExplicitSpecifying() {
+			String srcDocument = "/Word Templates/Bubble Chart.docx";
+			String docReport = "/PDF Reports/Bubble Chart_report.pdf";
+			try {
+				DocumentAssembler assembler = new DocumentAssembler();
+				assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new LoadSaveOptions(FileFormat.PDF),new DataSourceInfo( new DataStorage(), null));
+			} catch (Exception exp) {
+				System.out.println("Exception: " + exp.getMessage());
+			}
+		}
+
+	/**
+	 * Supports removal of paragraphs becoming empty after template syntax tags are removed or replaced with empty values for Word Processing documents
+	 * This feature is supported by version 18.10 or higher
+	 */
+    public static void emptyParagraphInWordProcessing() {
+		String srcDocument = "/Word Templates/Empty Paragraph.docx";
+		String docReport = "/Word Reports/Empty Paragraph.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.setOptions(DocumentAssemblyOptions.REMOVE_EMPTY_PARAGRAPHS);
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+										CommonUtilities.getOutPath(docReport),
+										new DataSourceInfo("dummy", "dummy"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+    }
+	/**
+	 * Supports removal of paragraphs becoming empty after template syntax tags are removed or replaced with empty values for Presentation documents
+	 * This feature is supported by version 18.10 or higher
+	 */
+	public static void emptyParagraphInPresentation() {
+		String srcDocument = "/Presentation Templates/Empty Paragraph.pptx";
+		String docReport = "/Presentation Reports/Empty Paragraph.pptx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.setOptions(DocumentAssemblyOptions.REMOVE_EMPTY_PARAGRAPHS);
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo("dummy", "dummy"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	/**
+	 * Supports removal of paragraphs becoming empty after template syntax tags are removed or replaced with empty values for Email documents
+	 * This feature is supported by version 18.10 or higher
+	 */
+	public static void emptyParagraphInEmail() {
+		String srcDocument = "/Email Templates/Empty Paragraph.msg";
+		String docReport = "/Email Reports/Empty Paragraph.msg";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.setOptions(DocumentAssemblyOptions.REMOVE_EMPTY_PARAGRAPHS);
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),
+					new DataSourceInfo("dummy", "dummy"));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+
+	/**
+	 * This method inserts nested external documents in word document
+	 */
+    public static void insertNestedExternalDocumentsInWord() {
+
+		String srcDocument = "/Word Templates/Nested External Document.docx";
+		String docReport = "/Word Reports/Nested External Document.docx";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+    }
+	/**
+	 * This method inserts nested external documents in email document
+	 */
+	public static void insertNestedExternalDocumentsInEmail() {
+
+		String srcDocument = "/Email Templates/Nested External Document.msg";
+		String docReport = "/Email Reports/Nested External Document.msg";
+		try {
+			DocumentAssembler assembler = new DocumentAssembler();
+			assembler.assembleDocument(CommonUtilities.getDataPath(srcDocument),
+					CommonUtilities.getOutPath(docReport),new DataSourceInfo( new DataStorage(), null));
+		} catch (Exception exp) {
+			System.out.println("Exception: " + exp.getMessage());
+		}
+	}
+	/**
+	 * Table Cell Merging in Word Processing Documents
+	 * Features is supported by version 19.1 or greater
+	 */
+	public static void tableCellsMergingInWordProcessing()
+    {
+		//ExStart:tableCellsMergingInWordProcessing
+        //Setting up source document template
+         String strDocumentTemplate = "/Word Templates/Merging Cells Dynamically.docx";
+        //Setting up destination PDF report 
+         String strDocumentReport = "/PDF Reports/Merging Cells Dynamically Report.pdf";
+        try
+        {
+            //Instantiate DocumentAssembler class
+            DocumentAssembler assembler = new DocumentAssembler();
+            //Create sample data source object
+            Manager manager = new DataStorage().getManagers().iterator().next();
+            //Call AssembleDocument to Merging Cells Dynamically Report in PDF format
+            assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+            		CommonUtilities.getOutPath(strDocumentReport), new LoadSaveOptions(FileFormat.PDF), new DataSourceInfo( manager, "manager"));
+        }
+        catch (Exception exp)
+        {
+        	System.out.println("Exception: " + exp.getMessage());
+        }
+        //ExEnd:tableCellsMergingInWordProcessing
+    }
+	/**
+	 * Table Cell Merging in Presentations
+	 * Features is supported by version 19.1 or greater
+	 */
+	public static void tableCellsMergingInPresentations()
+    {
+		//ExStart:tableCellsMergingInPresentations
+        //Setting up source document template
+         String strDocumentTemplate = "/Presentation Templates/Merging Cells Dynamically.pptx";
+        //Setting up destination PDF report 
+         String strDocumentReport = "/PDF Reports/Merging Cells Dynamically Report.pdf";
+        try
+        {
+            //Instantiate DocumentAssembler class
+            DocumentAssembler assembler = new DocumentAssembler();
+            //Create sample data source object
+            Manager manager = new DataStorage().getManagers().iterator().next();
+            //Call AssembleDocument to Merging Cells Dynamically Report in PDF format
+            assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+            		CommonUtilities.getOutPath(strDocumentReport), new LoadSaveOptions(FileFormat.PDF), new DataSourceInfo( manager, "manager"));
+        }
+        catch (Exception exp)
+        {
+        	System.out.println("Exception: " + exp.getMessage());
+        }
+        //ExEnd:tableCellsMergingInPresentations
+    }
+	/**
+	 * Table Cell Merging in Spreadsheets
+	 * Features is supported by version 19.1 or greater
+	 */
+	public static void tableCellsMergingInSpreadsheets()
+    {
+		//ExStart:tableCellsMergingInSpreadsheets
+        //Setting up source document template
+         String strDocumentTemplate = "/Spreadsheet Templates/Merging Cells Dynamically.xlsx";
+        //Setting up destination PDF report 
+         String strDocumentReport = "/PDF Reports/Merging Cells Dynamically Report.pdf";
+        try
+        {
+            //Instantiate DocumentAssembler class
+            DocumentAssembler assembler = new DocumentAssembler();
+            //Create sample data source object
+            Manager manager = new DataStorage().getManagers().iterator().next();
+            //Call AssembleDocument to Merging Cells Dynamically Report in PDF format
+            assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+            		CommonUtilities.getOutPath(strDocumentReport), new LoadSaveOptions(FileFormat.PDF), new DataSourceInfo( manager, "manager"));
+        }
+        catch (Exception exp)
+        {
+        	System.out.println("Exception: " + exp.getMessage());
+        }
+        //ExEnd:tableCellsMergingInSpreadsheets
+    }
+	/**
+	 * Table Cell Merging in Emails
+	 * Features is supported by version 19.1 or greater
+	 */
+	public static void tableCellsMergingInEmails()
+    {
+		//ExStart:tableCellsMergingInSpreadsheets
+        //Setting up source document template
+         String strDocumentTemplate = "/Email Templates/Merging Cells Dynamically.msg";
+        //Setting up destination PDF report 
+         String strDocumentReport = "/Email Reports/Merging Cells Dynamically Report.msg";
+        try
+        {
+            //Instantiate DocumentAssembler class
+            DocumentAssembler assembler = new DocumentAssembler();
+            //Call AssembleDocument to Merging Cells Dynamically Report in PDF format
+           			
+            EmailDataSourcesObjects getDataSourceDetails = DataStorage.emailDataSourceObject("Merging Cells Dynamically.msg", ".msg");
+			EmailDataSourcesNames dataSourceNames = DataStorage.emailDataSourceName(".msg");
+			assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+				CommonUtilities.getOutPath(strDocumentReport),
+				new DataSourceInfo(getDataSourceDetails.getDataSource(), dataSourceNames.getDataSource()),
+				new DataSourceInfo(getDataSourceDetails.getSender(), dataSourceNames.getSender()),
+				new DataSourceInfo(getDataSourceDetails.getRecipients(), dataSourceNames.getRecipients()),
+				new DataSourceInfo(getDataSourceDetails.getCC(), dataSourceNames.getCC()),
+				new DataSourceInfo(getDataSourceDetails.getSubject(), dataSourceNames.getSubject()),
+				new DataSourceInfo(getDataSourceDetails.getManager(), dataSourceNames.getManager()));
+        }
+        catch (Exception exp)
+        {
+        	System.out.println("Exception: " + exp.getMessage());
+        }
+        //ExEnd:tableCellsMergingInSpreadsheets
+    }
+	/**
+	 * In-lining syntax error messages into templates
+	 * Features is supported by version 19.3 or greater
+	 */
+	public static void demoInLineSyntaxError()
+    {
+		try
+		{
+			//ExStart:DemoInLineSyntaxError_19.3
+			//Setting up source document template
+			String strDocumentTemplate = "/Word Templates/Inline Error Demo.docx";
+			//Setting up destination PDF report 
+			String strDocumentReport = "/PDF Reports/Inline Error Demo.pdf.pdf";
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			//Enable the In-line error messaging
+			assembler.setOptions(DocumentAssemblyOptions.INLINE_ERROR_MESSAGES);
+			//Create sample data source object
+			Manager manager = new DataStorage().getManagers().iterator().next();
+
+			//Call AssembleDocument to show the demo Report and save the report in PDF format
+			//The AssembleDocument will return a boolean value to indicate the success or failed with inline error.
+			if(assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport), new LoadSaveOptions(FileFormat.PDF), new DataSourceInfo( manager, "manager")))
+			{
+				System.out.println("No error found in the template.");
+			}
+			else
+			{
+				System.out.println("Do something with a report containing a template syntax error.");
+			}
+			//ExEnd:DemoInLineSyntaxError_19.3
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Loading of template documents from HTML with resources
+	 * Features is supported by version 19.5 or greater
+	 */
+	public static void loadDocFromHTMLWithResource()
+    {
+		try
+		{
+			//ExStart:LoadDocFromHTMLWithResource_19.5
+			//Setting up resource directory for input template and output
+            String strDirectoryPath = CommonUtilities.getSourceFolder("\\ResourceLoad\\");
+			
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+					  
+			assembler.assembleDocument(strDirectoryPath + "TestWordsResourceLoad.htm", 
+					strDirectoryPath + "TestWordsResourceLoad Out.docx", 
+					new DataSourceInfo("It should be a jeep image.", "value"));
+			//ExEnd:LoadDocFromHTMLWithResource_19.5
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Loading of template documents from HTML with resources from an explicitly specified folder
+	 * Features is supported by version 19.5 or greater
+	 */
+	public static void  loadDocFromHTMLWithResource_ExplicitFolder()
+    {
+		try
+		{
+			//ExStart:LoadDocFromHTMLWithResource_ExplicitFolder_19.5
+			//Setting up resource directory for input template and output
+            String strDirectoryPath = CommonUtilities.getSourceFolder("\\ResourceLoad\\");
+			
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			
+			LoadSaveOptions loadSaveOptions = new LoadSaveOptions();
+			loadSaveOptions.setResourceLoadBaseUri(strDirectoryPath + "Alternative");
+			  
+			assembler.assembleDocument(strDirectoryPath + "TestWordsResourceLoad.htm", strDirectoryPath + 
+					"TestWordsResourceLoad Out.docx", 
+					loadSaveOptions, new DataSourceInfo("It should be a sport car image.", "value"));
+			//ExEnd:LoadDocFromHTMLWithResource_ExplicitFolder_19.5
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 *  Saving of external resource files at relative path while an assembled document loaded from a non-HTML format is being saved to HTML
+	 * Features is supported by version 19.5 or greater
+	 */
+	public static void saveDocToHTMLWithResource()
+    {
+		try
+		{
+			//ExStart:SaveDocToHTMLWithResource_19.5
+			//Setting up resource directory for input template and output
+            String strDirectoryPath = CommonUtilities.getSourceFolder("\\ResourceSave\\");
+			
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+					  
+			assembler.assembleDocument(strDirectoryPath + "TestWordsResourceSave.docx", 
+					strDirectoryPath + "TestWordsResourceSave Out.htm", new DataSourceInfo("Hello!", "value"));
+			//ExEnd:SaveDocToHTMLWithResource_19.5
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Loading of template documents from HTML with resources from an explicitly specified folder
+	 * Feature is supported by version 19.5 or greater
+	 */
+	public static void  saveDocToHTMLWithResource_ExplicitFolder()
+    {
+		try
+		{
+			//ExStart:SaveDocToHTMLWithResource_ExplicitFolder_19.5
+			//Setting up resource directory for input template and output
+            String strDirectoryPath = CommonUtilities.getSourceFolder("\\ResourceSave\\");
+			
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			
+			LoadSaveOptions loadSaveOptions = new LoadSaveOptions();
+			loadSaveOptions.setResourceSaveFolder(strDirectoryPath + "Alternative");
+			  
+			assembler.assembleDocument(strDirectoryPath + "TestWordsResourceSave.docx",
+					strDirectoryPath + "TestWordsResourceSave Out.htm", loadSaveOptions,
+					new DataSourceInfo("Hello!", "value"));
+			//ExEnd:SaveDocToHTMLWithResource_ExplicitFolder_19.5
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Saving an assembled Markdown document to a Word Processing format using file extension.
+	 * Feature is supported by version 19.8 or greater
+	 */
+	public static void saveMdtoWord_UsingExtension()
+    {
+		try
+		{
+			//ExStart:saveMdtoWord_UsingExtension_19.8
+			//Setting up source document template
+			String strDocumentTemplate = "/Markdown Templates/ReadMe.md";
+			//Setting up destination PDF report 
+			String strDocumentReport = "/Word Reports/ReadMe Out.docx";
+			
+			String description = "GroupDocs.Assembly for Java is a class library that enables you to generate documents in popular " +
+				    "office and email file formats based upon template documents and data obtained from various sources " +
+				    "including databases, XML, JSON, OData, objects of custom Java types, external documents, and more.";
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			
+					  
+			assembler.assembleDocument(
+					CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport),
+			    new DataSourceInfo("GroupDocs.Assembly for Java", "product"),
+			    new DataSourceInfo(description, "description"));
+			//ExEnd:saveMdtoWord_UsingExtension_19.8
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Saving an assembled Word Processing document or email to Markdown using file extension.
+	 * Feature is supported by version 19.8 or greater
+	 */
+	public static void saveWordOrEmailtoMD_UsingExtension()
+    {
+		try
+		{
+			//ExStart:saveWordOrEmailtoMD_UsingExtension_19.8
+			//Setting up source document template
+			String strDocumentTemplate = "/Word Templates/ReadMe.docx";
+			//Setting up destination PDF report 
+			String strDocumentReport = "/Markdown Reports/ReadMe Out.md";
+			
+			String description = "GroupDocs.Assembly for Java is a class library that enables you to generate documents in popular " +
+				    "office and email file formats based upon template documents and data obtained from various sources " +
+				    "including databases, XML, JSON, OData, objects of custom Java types, external documents, and more.";
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+								  
+			assembler.assembleDocument(
+					CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport),
+			    new DataSourceInfo("GroupDocs.Assembly for Java", "product"),
+			    new DataSourceInfo(description, "description"));
+			//ExEnd:saveWordOrEmailtoMD_UsingExtension_19.8
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Saving an assembled Word Processing document or email to Markdown using explicit specifying.
+	 * Feature is supported by version 19.8 or greater
+	 */
+	public static void saveWordOrEmailtoMD_Explicit()
+    {
+		try
+		{
+			//ExStart:saveWordOrEmailtoMD_Explicit_19.8
+			//Setting up source document template
+			InputStream sourceStream = new FileInputStream(CommonUtilities.getDataPath("/Word Templates/ReadMe.docx"));
+			//Setting up destination PDF report 
+			File outFile = new File(CommonUtilities.getOutPath("/Markdown Reports/ReadMe Out.md"));
+			outFile.createNewFile();
+			OutputStream  targetStream = new FileOutputStream(outFile, false);
+			
+			String description = "GroupDocs.Assembly for Java is a class library that enables you to generate documents in popular " +
+				    "office and email file formats based upon template documents and data obtained from various sources " +
+				    "including databases, XML, JSON, OData, objects of custom Java types, external documents, and more.";
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			
+					  
+			DataSourceInfo dataSourceInfo1 = new DataSourceInfo("The GroupDocs.Assembly for Java","product");
+			DataSourceInfo dataSourceInfo2 = new DataSourceInfo(description,"description");
+			
+			  
+			assembler.assembleDocument(sourceStream, targetStream, new LoadSaveOptions(FileFormat.MARKDOWN), dataSourceInfo1,dataSourceInfo2);
+			//ExEnd:saveWordOrEmailtoMD_Explicit_19.8
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Working with XML data sources.
+	 * Feature is supported by version 19.10 or greater
+	 */
+	public static void simpleXMLDS_Demo()
+    {
+		try
+		{
+			//ExStart:SimpleXMLDS_Demo_19.10
+			
+			//Setting up source document template
+			String strDocumentTemplate = "/Word Templates/SimpleDatasetDemo.docx";
+			
+			//Setting up destination report 
+			String strDocumentReport = "/Word Reports/SimpleXMLDSDemo Out.docx";
+			
+			//Setting up data source file
+             String strDataSource = "\\Managers.xml";
+			
+
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			
+			//Instantiate XML data source
+			XmlDataSource datasource= new XmlDataSource(CommonUtilities.XMLDataFile + strDataSource);
+					  
+			DataSourceInfo dataSourceInfo = new DataSourceInfo(datasource,"managers");
+			
+			
+			 //Assemble document 
+			assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport),dataSourceInfo);
+			
+			//ExEnd:SimpleXMLDS_Demo_19.10
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	/**
+	 * Working with csv data sources.
+	 * Feature is supported by version 19.10 or greater
+	 */
+	public static void simpleCsvDS_Demo()
+    {
+		try
+		{
+			//ExStart:SimpleCsvDS_Demo_19.10
+			
+			//Setting up source document template
+			String strDocumentTemplate = "/Text Templates/CsvDatasetDemo.txt";
+			
+			//Setting up destination report 
+			String strDocumentReport = "/Word Reports/SimpleCsvDSDemo Out.docx";
+			
+			//Setting up data source file
+             String strDataSource = "\\Person.csv";
+								
+			//set load csv by column name
+			CsvDataLoadOptions options = new CsvDataLoadOptions(true);
+			
+			CsvDataSource datasource= new CsvDataSource(CommonUtilities.excelDataFile + strDataSource,options);
+					  
+			DataSourceInfo dataSourceInfo = new DataSourceInfo(datasource,"persons");
+			
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			  
+			assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport),dataSourceInfo);
+			
+			//ExEnd:SimpleCsvDS_Demo_19.10
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }
+	 /* Working with csv data sources.
+	 * Feature is supported by version 19.10 or greater
+	 */
+	public static void simpleJsonDS_Demo()
+    {
+		try
+		{
+			//ExStart:simpleJsonDS_Demo_19.11
+			
+			//Setting up source document template
+			String strDocumentTemplate = "/Word Templates/SimpleDatasetDemo.docx";
+			
+			//Setting up destination report 
+			String strDocumentReport = "/Word Reports/SimpleJsonDSDemo Out.docx";
+			
+			//Setting up data source file
+             String strDataSource = "\\ManagerData.json";
+								
+           //Instantiate Json data source
+ 			JsonDataSource datasource= new JsonDataSource(CommonUtilities.JsonDataFile + strDataSource);
+ 					  
+ 			DataSourceInfo dataSourceInfo = new DataSourceInfo(datasource,"managers");
+			
+			//Instantiate DocumentAssembler class
+			DocumentAssembler assembler = new DocumentAssembler();
+			  
+			assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+					CommonUtilities.getOutPath(strDocumentReport),dataSourceInfo);
+			
+			//ExEnd:simpleJsonDS_Demo_19.11
+
+		}
+		catch (Exception exp)
+		{
+			System.out.println("Exception: " + exp.getMessage());
+		}
+        
+    }	
+	 	/* Insert Bookmarks Dynamically in Word Document.
+		 * Feature is supported by version 20.3 or greater
+		 */
+		public static void dynamicBookmarkInsertionWord()
+	    {
+			try
+			{
+				//ExStart:dynamicBookmarkInsertionWord_20.3
+				
+				//Setting up source document template
+				String strDocumentTemplate = "/Word Templates/Dynamic bookmarks.docx";
+				
+				//Setting up destination report 
+				String strDocumentReport = "/Word Reports/Dynamic_bookmarks Out.docx";
+				
+				//Setting up Uri Expression
+	            String bookmark_expression = "gd_bookmark";
+	            //Setting up Display Text Expression
+	            String displayTextExpression = "GroupDocs";
+									
+	     				
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				  
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+						CommonUtilities.getOutPath(strDocumentReport),
+						new DataSourceInfo(bookmark_expression, "bookmark_expression"), 
+						new DataSourceInfo(displayTextExpression, "displayTextExpression"));
+				
+				//ExEnd:dynamicBookmarkInsertionWord_20.3
+
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+	        
+	    }
+		/* Insert Bookmarks Dynamically in Excel Document.
+		 * Feature is supported by version 20.3 or greater
+		 */
+		public static void dynamicBookmarkInsertionExcel()
+	    {
+			try
+			{
+				//ExStart:dynamicBookmarkInsertionExcel_20.3
+				
+				//Setting up source document template
+				String strDocumentTemplate = "/Spreadsheet Templates/Dynamic Cell Range.xlsx";
+				
+				//Setting up destination report 
+				String strDocumentReport = "/Spreadsheet Reports/Dynamic_Cell_Range out.xlsx";
+				
+				//Setting up Uri Expression
+	            String bookmark_expression = "gd_bookmark";
+	            //Setting up Display Text Expression
+	            String displayTextExpression = "GroupDocs";
+									
+	     				
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				  
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+						CommonUtilities.getOutPath(strDocumentReport),
+						new DataSourceInfo(bookmark_expression, "bookmark_expression"), 
+						new DataSourceInfo(displayTextExpression, "displayTextExpression"));
+				
+				//ExEnd:dynamicBookmarkInsertionExcel_20.3
+
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+	        
+	    }
+		/* Insert Image Dynamically in Word Document.
+		 * Feature is supported by version 20.3 or greater
+		 */
+		public static void insertImageDynamicallyInWord()
+	    {
+			try
+			{
+				//ExStart:insertImageDynamicallyInWord_20.3
+				
+				//Setting up source document template (Email or Word Document)
+                String strDocumentTemplate = "/Word Templates/DynamicImageDemo.docx";
+
+                //Setting up destination for reports 
+                String strDocumentReport = "/Word Reports/DynamicImageDemo Out.docx";
+						
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				  
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+						CommonUtilities.getOutPath(strDocumentReport),
+						new DataSourceInfo(CommonUtilities.getImagePath("no-photo.jpg"),"image_expression"));
+				
+				//ExEnd:insertImageDynamicallyInWord_20.3
+
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+	        
+	    }
+		/* Insert Document Dynamically in Word Document.
+		 * Feature is supported by version 20.3 or greater
+		 */
+		public static void insertDocumentDynamicallyInWord()
+	    {
+			try
+			{
+				//ExStart:insertDocumentDynamicallyInWord_20.3
+				
+				//Setting up source document template (Email or Word Document)
+                String strDocumentTemplate = "/Word Templates/DynamicDocInsert.docx";
+
+                //Setting up destination for reports 
+                String strDocumentReport = "/Word Reports/DynamicDocInsert Out.docx";
+						
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				  
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+						CommonUtilities.getOutPath(strDocumentReport),
+						new DataSourceInfo(CommonUtilities.getOuterDoc("OuterDoc.docx"),"document_expression"));
+				
+				//ExEnd:insertDocumentDynamicallyInWord_20.3
+
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+	        
+	    }
+		/* Set checkbox value dynamically in Word document
+		 * Feature is supported by version 20.3 or greater
+		 */
+		public static void setCheckboxValueDynamicallyInWord(Boolean boolVal)
+	    {
+			try
+			{
+				//ExStart:setCheckboxValueDynamicallyInWord_20.3
+				
+				//Setting up source document template (Email or Word Document)
+                String strDocumentTemplate = "/Word Templates/CheckBoxValueSetDemo.docx";
+
+                //Setting up destination for reports 
+                String strDocumentReport = "/Word Reports/CheckBoxValueSetDemo Out.docx";
+						
+				//Instantiate DocumentAssembler class
+				DocumentAssembler assembler = new DocumentAssembler();
+				  
+				assembler.assembleDocument(CommonUtilities.getDataPath(strDocumentTemplate),
+						CommonUtilities.getOutPath(strDocumentReport),
+						new DataSourceInfo(boolVal, "conditional_expression"));
+				
+				//ExEnd:setCheckboxValueDynamicallyInWord_20.3
+
+			}
+			catch (Exception exp)
+			{
+				System.out.println("Exception: " + exp.getMessage());
+			}
+	        
+	    }
+		
 }

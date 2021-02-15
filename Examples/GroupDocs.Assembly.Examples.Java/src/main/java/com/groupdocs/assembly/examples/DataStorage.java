@@ -11,6 +11,7 @@ import com.groupdocs.assembly.DocumentTableOptions;
 import com.groupdocs.assembly.examples.BusinessEntities.Client;
 import com.groupdocs.assembly.examples.BusinessEntities.Contract;
 import com.groupdocs.assembly.examples.BusinessEntities.Manager;
+import com.groupdocs.assembly.examples.BusinessEntities.Service;
 
 public class DataStorage {
 	//ExStart:DataStorage
@@ -20,23 +21,27 @@ public class DataStorage {
 
 	private static List<Manager> createManagers() {
 		return Arrays.asList(
-				createManager("John Smith", 37, new String[] { "A Company", "B Ltd.", "C & D" },
+				createManager("John Smith", 37,"red", new String[] { "A Company", "B Ltd.", "C & D" },
 						new float[] { 1200000, 750000, 350000 },
-						new Date[] { getDate(2015, 1, 1), getDate(2015, 4, 1), getDate(2015, 7, 1) }),
-				createManager("Tony Anderson", 37, new String[] { "E Corp.", "F & Partners" },
-						new float[] { 650000, 550000 }, new Date[] { getDate(2015, 2, 1), getDate(2015, 8, 1) }),
-				createManager("July James", 37, new String[] { "G & Co.", "H Group", "I & Sons", "J Ent." },
+						new Date[] { getDate(2015, 1, 1), getDate(2015, 4, 1), getDate(2015, 7, 1) }, new String[]{"Regular Cleaning","Oven Cleaning"}),
+				createManager("Tony Anderson", 37,"green", new String[] { "E Corp.", "F & Partners" },
+						new float[] { 650000, 550000 }, new Date[] { getDate(2015, 2, 1), getDate(2015, 8, 1) },new String[]{"Regular Cleaning","Oven Cleaning","Carpet Cleaning"}),
+				createManager("July James", 37,"blue", new String[] { "G & Co.", "H Group", "I & Sons", "J Ent." },
 						new float[] { 350000, 250000, 100000, 100000 }, new Date[] { getDate(2015, 2, 1),
-								getDate(2015, 5, 1), getDate(2015, 7, 1), getDate(2015, 8, 1) }));
+								getDate(2015, 5, 1), getDate(2015, 7, 1), getDate(2015, 8, 1) },new String[]{"Regular Cleaning","Carpet Cleaning"}));
 	}
 
-	private static Manager createManager(String name, int age, String[] clientNames, float[] contractPrices,
-			Date[] contractDates) {
+	private static Manager createManager(String name, int age,String color, String[] clientNames, float[] contractPrices,
+			Date[] contractDates, String[] services) {
 		List<Contract> contracts = new ArrayList();
-		Manager manager = new Manager(name, age, contracts);
-
+		List<Service> mServices = new ArrayList(); 
+		Manager manager = new Manager(name, age,color, contracts);
+		
+		for (int j = 0; j < services.length; j++)
+			mServices.add(new Service(services[j]));
+		
 		for (int i = 0; i < clientNames.length; i++)
-			contracts.add(new Contract(manager, new Client(clientNames[i]), contractPrices[i], contractDates[i]));
+			contracts.add(new Contract(manager, new Client(clientNames[i]), contractPrices[i], contractDates[i],mServices));
 
 		return manager;
 	}
@@ -145,9 +150,8 @@ public class DataStorage {
 		//ExEnd:presentationData
 	}
 	
-	public static Object[] emailDataSourceObject(String srcDocument, String documentFormat){
-		//ExStart:emailDataSourceObject
-		Object[] dataSources;
+	public static EmailDataSourcesObjects emailDataSourceObject(String srcDocument, String documentFormat){
+		EmailDataSourcesObjects dataSources = new EmailDataSourcesObjects();
 		if (documentFormat == ".eml" || documentFormat == ".msg") {
 			ArrayList<String> recipients = new ArrayList();
 			recipients.add("Named Recipient <named@example.com>");
@@ -156,28 +160,182 @@ public class DataStorage {
 			final int extensionLength = 4;
 			String subject = srcDocument.substring(0, srcDocument.length() - extensionLength);
 			Manager manager = new DataStorage().getManagers().iterator().next();
-			dataSources = new Object[] { new DataStorage(), "Example Sender <sender@example.com>", recipients,
-					"cc@example.com", subject, manager };
-
-		
+			dataSources.setDataSource(new DataStorage());
+			dataSources.setSender("Example Sender <sender@example.com>");
+			dataSources.setRecipients(recipients);
+			dataSources.setCC("cc@example.com");
+			dataSources.setSubject(subject);
+			dataSources.setManager(manager);	
 			return dataSources;
 		} else {
-			dataSources = new Object[] { new DataStorage() }; 
+			dataSources.setDataSource(new DataStorage());
 			return dataSources;
 		}
-		//ExEnd:emailDataSourceObject
 	}
-	public static String[] emailDataSourceName(String documentFormat){ 
-		//ExStart:emailDataSourceName
-		String[] dataSourceNames;
+	public static EmailDataSourcesObjects emailDataSourceObject(String srcDocument, String documentFormat, String title){
+		EmailDataSourcesObjects dataSources = new EmailDataSourcesObjects();
 		if (documentFormat == ".eml" || documentFormat == ".msg") {
-			dataSourceNames = new String[] { null, "sender", "recipients", "cc", "subject", "manager" };
+			ArrayList<String> recipients = new ArrayList();
+			recipients.add("Named Recipient <named@example.com>");
+			recipients.add("unnamed@example.com");
+			
+			final int extensionLength = 4;
+			String subject = srcDocument.substring(0, srcDocument.length() - extensionLength);
+			Manager manager = new DataStorage().getManagers().iterator().next();
+			dataSources.setDataSource(new DataStorage());
+			dataSources.setSender("Example Sender <sender@example.com>");
+			dataSources.setRecipients(recipients);
+			dataSources.setCC("cc@example.com");
+			dataSources.setSubject(subject);
+			dataSources.setManager(manager);
+			dataSources.setTitle(title);		
+			return dataSources;
+		} else {
+			dataSources.setDataSource(new DataStorage());
+			return dataSources;
+		}
+	}
+	public static EmailDataSourcesNames emailDataSourceName(String documentFormat){
+		EmailDataSourcesNames dataSourceNames = new EmailDataSourcesNames();
+		if (documentFormat == ".eml" || documentFormat == ".msg") {
+			dataSourceNames.setDataSource(null);
+			dataSourceNames.setSender("sender");
+			dataSourceNames.setRecipients("recipients");
+			dataSourceNames.setCC("cc");
+			dataSourceNames.setSubject("subject");
+			dataSourceNames.setManager("manager");
 			return dataSourceNames;
-		}else { 
-			dataSourceNames = new String[] { null };
+		}else {
 			return dataSourceNames;
 		}
-		//ExEnd:emailDataSourceName
 	}
+	public static EmailDataSourcesNames emailDataSourceName(String documentFormat, String title){
+		EmailDataSourcesNames dataSourceNames = new EmailDataSourcesNames();
+		if (documentFormat == ".eml" || documentFormat == ".msg") {
+			dataSourceNames.setDataSource(null);
+			dataSourceNames.setSender("sender");
+			dataSourceNames.setRecipients("recipients");
+			dataSourceNames.setCC("cc");
+			dataSourceNames.setSubject("subject");
+			dataSourceNames.setManager("manager");
+			dataSourceNames.setTitle(title);
+			return dataSourceNames;
+		}else {
+			return dataSourceNames;
+		}
+	}
+	public static class EmailDataSourcesObjects
+	{
+		public DataStorage dataSource; 
+		public String sender; 
+		public ArrayList<String> recipients;
+		public String CC;
+		public String subject;
+		public Manager manager;
+		public String title;
+	
+		public EmailDataSourcesObjects() {
+		}
+		
+
+		public void setDataSource(DataStorage dataSource) {
+			this.dataSource = dataSource;
+		}
+		public void setSender(String sender){
+			this.sender = sender;
+		}
+		public void setRecipients(ArrayList<String> recipients){
+			this.recipients = recipients;
+		}
+		public void setCC(String CC){
+			this.CC = CC;
+		}
+		public void setSubject(String subject){
+			this.subject = subject;
+		}
+		public void setManager(Manager manager){
+			this.manager = manager;
+		}
+		public void setTitle(String title){
+			this.title = title;
+		}
+
+		public DataStorage getDataSource() {
+			return this.dataSource;
+		}
+		public String getSender(){
+			return this.sender;
+		}
+		public ArrayList<String> getRecipients(){
+			return this.recipients;
+		}
+		public String getCC(){
+			return this.CC;
+		}
+		public String getSubject(){
+			return this.subject;
+		}
+		public Manager getManager(){
+			return this.manager;
+		}
+		public String getTitle(){
+			return this.title;
+		}
+	}
+	public static class EmailDataSourcesNames
+	{
+		public String dataSource; 
+		public String sender; 
+		public String recipients;
+		public String CC;
+		public String subject;
+		public String manager;
+		public String title;
+		public EmailDataSourcesNames() {
+		}
+		public void setDataSource(String dataSource ) {
+			this.dataSource = dataSource;
+		}
+		public void setSender(String sender){
+			this.sender = sender;
+		}
+		public void setRecipients(String recipients){
+			this.recipients = recipients;
+		}
+		public void setCC(String CC){
+			this.CC = CC;
+		}
+		public void setSubject(String subject){
+			this.subject = subject;
+		}
+		public void setManager(String manager){
+			this.manager = manager;
+		}
+		public void setTitle(String title){
+			this.title = title;
+		}
+		public String getDataSource(){
+			return this.dataSource;
+		}
+		public String getSender(){
+			return this.sender;
+		}
+		public String getRecipients(){
+			return this.recipients;
+		}
+		public String getCC(){
+			return this.CC;
+		}
+		public String getSubject(){
+			return this.subject;
+		}
+		public String getManager(){
+			return this.manager;
+		}
+		public String getTitle(){
+			return this.title;
+		}
+
+	} 
 	//ExEnd:DataStorage
 }
